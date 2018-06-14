@@ -16,6 +16,11 @@ public class EmployeeConsumer {
   @Bean
   public EmployeeConsumerController employeeConsumerController() { return new EmployeeConsumerController(); }
 
+  /**
+   * @param args <pre>[0]</pre>: The integer ID of an employee.
+   * @throws RestClientException
+   * @throws IOException
+   */
   public static void main(String[] args) throws RestClientException, IOException {
 
     ApplicationContext context = new SpringApplicationBuilder(EmployeeConsumer.class).
@@ -24,6 +29,6 @@ public class EmployeeConsumer {
         web(true).run(args);
 
     EmployeeConsumerController controller = context.getBean(EmployeeConsumerController.class);
-    controller.getEmployee();
+    controller.getEmployee(Integer.parseInt(args[0]));
   }
 }

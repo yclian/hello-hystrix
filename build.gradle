@@ -1,13 +1,13 @@
 buildscript {
   ext {
-		springBootVersion = '1.5.13.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
-	}
+    springBootVersion = '1.5.13.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+  }
 }
 
 apply plugin: 'java'
@@ -21,17 +21,40 @@ dependencyManagement {
 }
 
 dependencies {
-    // "We dont recommend using version numbers for the spring cloud dependencies, you should be using the Spring Cloud
-    // BOM which manages the versions for you."
-    // See: https://github.com/spring-cloud/spring-cloud-config/issues/836#issuecomment-388436735
-    compile 'org.springframework.cloud:spring-cloud-starter-config'
-    compile 'org.springframework.cloud:spring-cloud-starter-hystrix'
-    compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+  // "We dont recommend using version numbers for the spring cloud dependencies, you should be using the Spring Cloud
+  // BOM which manages the versions for you."
+  // See: https://github.com/spring-cloud/spring-cloud-config/issues/836#issuecomment-388436735
+  compile 'org.springframework.cloud:spring-cloud-starter-config'
+  compile 'org.springframework.cloud:spring-cloud-starter-hystrix'
+  compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+  compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
 }
 
 repositories {
-    maven {
-        url 'https://repo.spring.io/libs-milestone'
-    }
+  maven {
+    url 'https://repo.spring.io/libs-milestone'
+  }
 }
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '4.8'
+}
+
+task runServer(dependsOn: 'classes', type: JavaExec) {
+  main = 'com.github.yclian.hello.hystrix.EurekaServer'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task runProducer(dependsOn: 'classes', type: JavaExec) {
+  main = 'com.github.yclian.hello.hystrix.EmployeeProducer'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task runConsumer(dependsOn: 'classes', type: JavaExec) {
+  main = 'com.github.yclian.hello.hystrix.EmployeeConsumer'
+  classpath = sourceSets.main.runtimeClasspath
+  if (project.hasProperty('employeeId')) {
+    args project.property('employeeId')
+  }
+}
+

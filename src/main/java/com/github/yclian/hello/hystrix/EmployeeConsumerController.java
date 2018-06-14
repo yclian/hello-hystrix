@@ -21,10 +21,10 @@ public class EmployeeConsumerController {
   @Autowired
   private LoadBalancerClient loadBalancer;
 
-  public void getEmployee() throws RestClientException, IOException {
+  public void getEmployee(int employeeId) throws RestClientException, IOException {
 
     ServiceInstance serviceInstance = loadBalancer.choose("employee-producer");
-    String baseUrl = serviceInstance.getUri().toString() + "/employees/" + new Random().nextInt(50);
+    String baseUrl = serviceInstance.getUri().toString() + "/employees/" + employeeId;
 
     RestTemplate restTemplate = new RestTemplate();
     ResponseEntity<String> response = null;
